@@ -1,5 +1,5 @@
-    #!/usr/bin/env python3
-    """Fail if staged code changes lack a prompt reference or a new prompt file."""
+#!/usr/bin/env python3
+"""Fail if staged code changes lack a prompt reference or a new prompt file."""
 import subprocess, sys
 
 res = subprocess.run(["git","diff","--cached","--name-only"], capture_output=True, text=True)
