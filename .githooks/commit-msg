@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+MSG_FILE="$1"
+MSG_CONTENT=$(cat "$MSG_FILE")
+if echo "$MSG_CONTENT" | grep -Eqi '^(Merge|Revert)'; then
+  exit 0
+fi
+CHANGED=$(git diff --cached --name-only)
+if echo "$CHANGED" | grep -E '^(app/|src/|tests/)' >/dev/null; then
+  if ! echo "$CHANGED" | grep -E '^docs/prompts/.+\.prompt\.md$' >/dev/null; then
+    if ! echo "$MSG_CONTENT" | grep -E 'PHR-\d{4}' >/dev/null; then
+      echo "[PHR] Add a prompt reference like 'refs: PHR-0123' to the commit message or stage a prompt file." >&2
+      exit 1
+    fi
+  fi
+fi

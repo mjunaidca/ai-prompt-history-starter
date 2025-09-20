@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [ -f scripts/prompt_guard.py ]; then
+  python3 scripts/prompt_guard.py
+fi
+if git diff --cached --name-only | grep -E '^docs/prompts/.+\.prompt\.md$' >/dev/null; then
+  if git diff --cached | grep -E 'AKIA|SECRET_KEY|BEGIN RSA PRIVATE KEY' >/dev/null; then
+    echo "[PHR] Possible secret found in prompt file. Abort." >&2
+    exit 1
+  fi
+fi
