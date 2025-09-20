@@ -8,9 +8,10 @@ model: gpt-5-codex
 repo_ref: <branch-or-commit>
 scope_files: []
 links:
-  adr: {previous_prompt: 0001}
+  adr: docs/adr/0001-web-framework.md
   issue: null
   pr: null
+  previous_prompt: 0001
 acceptance: []
 constraints:
   - minimal diff, no new deps

@@ -10,7 +10,11 @@ def test_hello_endpoint():
     response = client.get("/hello")
     
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World!"}
+    data = response.json()
+    assert data["message"] == "Hello World!"
+    assert "status" in data
+    assert "timestamp" in data
+    assert "version" in data
 
 
 # RED PHASE: Failing tests that will drive implementation
@@ -37,10 +41,11 @@ def test_hello_endpoint_returns_only_required_fields():
     """Test that GET /hello returns only the required fields."""
     response = client.get("/hello")
     data = response.json()
-    assert len(data) == 1
+    assert len(data) == 4  # Updated to expect 4 fields
     assert "message" in data
-    assert "timestamp" not in data  # This should fail initially
-    assert "version" not in data    # This should fail initially
+    assert "status" in data
+    assert "timestamp" in data
+    assert "version" in data
 
 
 def test_hello_endpoint_handles_multiple_requests():
@@ -48,7 +53,11 @@ def test_hello_endpoint_handles_multiple_requests():
     for i in range(3):
         response = client.get("/hello")
         assert response.status_code == 200
-        assert response.json() == {"message": "Hello World!"}
+        data = response.json()
+        assert data["message"] == "Hello World!"
+        assert "status" in data
+        assert "timestamp" in data
+        assert "version" in data
 
 
 def test_hello_endpoint_response_time():
@@ -70,7 +79,11 @@ def test_hello_endpoint_accepts_headers():
     }
     response = client.get("/hello", headers=headers)
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World!"}
+    data = response.json()
+    assert data["message"] == "Hello World!"
+    assert "status" in data
+    assert "timestamp" in data
+    assert "version" in data
 
 
 # RED PHASE: These tests will FAIL - demonstrating what we need to implement
@@ -97,16 +110,16 @@ def test_hello_endpoint_handles_post_request():
 
 
 def test_hello_endpoint_returns_detailed_response():
-    """Test that GET /hello returns detailed response structure (WILL FAIL)."""
+    """Test that GET /hello returns detailed response structure."""
     response = client.get("/hello")
     data = response.json()
-    expected_structure = {
-        "message": "Hello World!",
-        "status": "success",
-        "timestamp": "2025-01-20T00:00:00Z",
-        "version": "0.1.0"
-    }
-    assert data == expected_structure  # This will fail - current response is simpler
+    
+    # Check structure without exact timestamp match
+    assert data["message"] == "Hello World!"
+    assert data["status"] == "success"
+    assert data["version"] == "0.1.0"
+    assert "timestamp" in data
+    assert data["timestamp"].endswith("Z")  # Should be ISO format with Z suffix
 
 
 def test_hello_endpoint_handles_query_parameters():
